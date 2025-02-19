@@ -29,9 +29,19 @@ dependencies = [
 configure_without_installdir = True
 configure_cmd = "python %(start_dir)s/buildbot/configure.py \
 -o %(builddir)s/build -t Release --cmake-gen Ninja \
---cmake-opt=\"-DCMAKE_INSTALL_PREFIX=%(installdir)s\""
-build_cmd_targets = "deploy-sycl-toolchain"
+--cmake-opt=\"-DCMAKE_INSTALL_PREFIX=%(installdir)s\" \
+--llvm-external-projects \"openmp\""
+build_cmd_targets = "deploy-sycl-toolchain omp"
 build_dir = "%(builddir)s/build"
 buildopts = "-C " + build_dir + " " + build_cmd_targets
 installopts =  "-C " + build_dir
 install_target_subdir = "%(builddir)s/build/install"
+postinstallcmds = [
+    'echo "--gcc-toolchain=$EBROOTGCCCORE" > %(installdir)s/bin/clang++.cfg'
+]
+
+# OpenMP libs install in lib/<target-triple>
+modextrapaths = {
+    'LIBRARY_PATH': 'lib/%(arch)s-unknown-linux-gnu',
+    'LD_LIBRARY_PATH': 'lib/%(arch)s-unknown-linux-gnu',
+}
