@@ -20,6 +20,11 @@ builddependencies = [
     ('CMake', '3.29.3'),
     ('Ninja', '1.12.1'),
     ('Python', '3.12.3'),
+    # CUDA >= 11.6 is recommended for the NVIDIA GPU backend in DPC++.
+    # Since CUDA is backwards compatible, any higher version will work
+    # at runtime with this build. DPC++ can also be used without CUDA
+    # to compile for other backends, hence no runtime dependency on CUDA.
+    ('CUDA', '11.6.0', '', SYSTEM),
 ]
 dependencies = [
     ('binutils', '2.42'),
@@ -30,7 +35,8 @@ configure_without_installdir = True
 configure_cmd = "python %(start_dir)s/buildbot/configure.py \
 -o %(builddir)s/build -t Release --cmake-gen Ninja \
 --cmake-opt=\"-DCMAKE_INSTALL_PREFIX=%(installdir)s\" \
---llvm-external-projects \"openmp\""
+--llvm-external-projects \"openmp\" \
+--cuda --cmake-opt=\"-DCUDA_TOOLKIT_ROOT_DIR=$EBROOTCUDA\""
 build_cmd_targets = "deploy-sycl-toolchain omp"
 build_dir = "%(builddir)s/build"
 buildopts = "-C " + build_dir + " " + build_cmd_targets
