@@ -3,14 +3,15 @@ name = 'dpcpp'
 version = '6.0.0_54cbbec1'
 
 homepage = 'https://github.com/intel/llvm'
-description = """The DPC++ is a LLVM-based compiler project that implements
-compiler and runtime support for the SYCL language"""
+description = '''The DPC++ is a LLVM-based compiler project that implements
+compiler and runtime support for the SYCL language. This build includes SYCL
+backends for Intel and NVIDIA devices.'''
 
 moduleclass = 'compiler'
 
 toolchain = {'name': 'GCCcore', 'version': '13.3.0'}
 
-source_urls = ["https://github.com/intel/llvm/archive/"]
+source_urls = ['https://github.com/intel/llvm/archive/']
 sources = [
     '54cbbec17bcad512f18881562c5f204936e9f3b3.tar.gz',
 ]
@@ -32,16 +33,18 @@ dependencies = [
 ]
 
 configure_without_installdir = True
-configure_cmd = "python %(start_dir)s/buildbot/configure.py \
+configure_cmd = 'python %(start_dir)s/buildbot/configure.py \
 -o %(builddir)s/build -t Release --cmake-gen Ninja \
---cmake-opt=\"-DCMAKE_INSTALL_PREFIX=%(installdir)s\" \
---llvm-external-projects \"openmp\" \
---cuda --cmake-opt=\"-DCUDA_TOOLKIT_ROOT_DIR=$EBROOTCUDA\""
-build_cmd_targets = "deploy-sycl-toolchain omp"
-build_dir = "%(builddir)s/build"
-buildopts = "-C " + build_dir + " " + build_cmd_targets
-installopts =  "-C " + build_dir
-install_target_subdir = "%(builddir)s/build/install"
+--cmake-opt="-DCMAKE_INSTALL_PREFIX=%(installdir)s" \
+--llvm-external-projects "openmp" \
+--cuda --cmake-opt="-DCUDA_TOOLKIT_ROOT_DIR=$EBROOTCUDA"'
+
+build_cmd_targets = 'deploy-sycl-toolchain omp'
+build_dir = '%(builddir)s/build'
+buildopts = '-C ' + build_dir + ' ' + build_cmd_targets
+
+install_target_subdir = '%(builddir)s/build/install'
+installopts = '-C ' + build_dir
 postinstallcmds = [
     'echo "--gcc-toolchain=$EBROOTGCCCORE" > %(installdir)s/bin/clang++.cfg'
 ]
